@@ -1,6 +1,21 @@
 //assign5.cpp
 #include "assign5.h"
 
+
+// simplified program to model only quadratic equations
+struct equation_t {
+  
+  equation_t(double a, double b, double c){
+    coeffs = {a, b, c};
+    roots = {0, 0};
+  }
+  
+  equation_t(){
+    coeffs = {0, 0, 0};
+    roots = {0, 0};
+  }
+};
+
 solution::solution(const int coeffSize, const int rootSize, bool rootsExist)
 {
   m_coeffSize = coeffSize;    //default: 3
