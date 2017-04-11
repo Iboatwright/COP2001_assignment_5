@@ -4,32 +4,22 @@
 #define __ASSIGN5_H_INCLUDED__
 
 class solution {
-private:
-  int m_coeffSize = 3;
-  int m_rootSize = 2;  
-  double* coeffs;  // pointer to coefficient array
-  double* roots;  // pointer to roots array
-  bool rootsExist = false;  // if true then real roots exist
+  
+  private:
+    int m_coeffSize;
+    int m_rootSize;
+    bool m_rootsExist;  // if true then real roots exist
+    double* coeffs;  // pointer to coefficient array
+    double* roots;  // pointer to roots array
 
-public:
-  solution(){
-    // These arrays are allocated from the heap and exist until deleted.
-    coeffs = new double[m_coeffSize];  
-    roots = new double[m_rootSize];
-  }
-  
-  ~solution(){
-    delete[] coeffs; 
-    delete[] roots;
+  public:
+    solution(const int coeffSize = 3, const int rootSize = 2,
+             bool rootsExist = false);
     
-    // not really needed but good practice i think
-    coeffs = nullptr;
-    roots = nullptr;
-  }
-  
-  int* getCoeffs() return { &coeffs; }
-  int* getroots() return { &roots; }
-  int get 
+    ~solution();
+    
+    double* getCoeffs();
+    double* getRoots();
 };
 
 #endif  // __ASSIGN5_H_INCLUDED__
