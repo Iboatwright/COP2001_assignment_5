@@ -3,27 +3,20 @@
 #include <iostream>
 #include <cmath>
 
-
-Equation_t::Equation_t(){
-  Equation_t::init();
+// Assigns address of new arrays to coeffs and roots pointers
+Equation::Equation(){
+  // These arrays are allocated from the heap and exist until deleted.
+  coeffs = new double[coeffsCount];
+  roots = new double[rootsCount];
 }
   
-Equation_t::~Equation_t() {
+Equation::~Equation() {
     delete[] coeffs;
     delete[] roots;
     
     // not really needed but good practice i think
     coeffs = nullptr;
     roots = nullptr;
-}
-
-
-// Assigns address of new arrays to coeffs and roots pointers
-void Equation_t::init() {
-  // These arrays are allocated from the heap and exist until deleted.
-  coeffs = new double[coeffsCount];
-  roots = new double[rootsCount];
-  return;
 }
 
 double Solution::bisect()

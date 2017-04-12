@@ -1,17 +1,15 @@
 /***************************************************************************
- file   : boatwright3.cpp
- title  : COP 2001 Assignment #3 - 2017
+ file   : assign5test.cpp
+ title  : COP 2001 Assignment #5 - 2017
  author : Ivan Boatwright
  email  : ijboatwright5153@eagle.fgcu.edu
- version: 3.14 3/22/17
+ version: 5.0 4/12/17
  
- Solves quadratic equations of the form:
+ quadratic equations of the form:
  a*x^2 + b*x + c = 0
- The number of equations to calculate is passed from the commandline.
- Only a positive integer is accepted from the commandline. Otherwise the
- program terminates early.
+ 
  The values for a, b, and c are entered by the operator when prompted.
- If zero is entered for the 'a' variable an error message is displayed.
+ If zero is entered for the 'a' variable
  If non-numeric values are entered for a, b, or c an error message is
  displayed.
  If roots exist the results are printed to a file. If no roots exist a
@@ -27,19 +25,21 @@
 
 
 // commandline argument validation (must be a positive integer)
-int validateNumber(int, char*);
+double validateEpsilon(int, char*);
 
+// returns the prog_name from argv[0]
+std::string getProgName(char*);
 
 // Requests user to input the coefficients
 void coeffInput(double&, char);
 
 // Reads and returns valid coefficients from stdin.
-void readCoeffs();
+void readCoeffs(Solution&);
 
 
 // If the discriminant is zero or greater, the roots are computed,
 // stored in the equation object, and rootsExist is set to true.
-void equSolver();
+void equSolver(Solution&);
 
 // Appends real roots to the file. Otherwise prints a message
 // to stdout that no real roots exists.
@@ -50,50 +50,49 @@ int main(int argc, char* argv[]) {
   
   // local constants
   const char* OUTPUT_FILE = "results.dat";
+  const std::string prog_name = getProgName(argv[0]);
   
   // number of equations to calculate
-  int number = validateNumber(argc, argv[1]);
-  
+  double epsilon = validateEpsilon(argc, argv[1]);
+  if (!epsilon) {
+    std::cout << "\t\t Execution: " << prog_name << " " << argv[1] << std::endl;
+    return 1;
+  }
   
   std::ofstream outStream;
   outStream.open(OUTPUT_FILE);  // if file exists, it is overwritten
+  
+  // instantiate Solution object
+  Solution quad;
 
-    // Operator enters values for the coefficients.
-    readCoeffs();
-    
-    // Determines if there are real roots. If so calculates the roots.
-    equSolver();
-    
-    // Directs output to the file or stdout respectively, based on rootsExist.
-    outResults(outStream);
+  // Operator enters values for the coefficients.
+  readCoeffs(quad);
+  
+  // Determines if there are real roots. If so calculates the roots.
+  equSolver(quad);
+  
+  // Directs output to the file or stdout respectively, based on rootsExist.
+  outResults(outStream);
   
   outStream.close();
   
   // Friendly end of program message.
-  if ( number > 1){
-    std::cout << "( " << number << " ) equation" << ((number == 1)?" ":"s ")
-    << "calculated. Have a nice day!" << std::endl;
-  }
+  std::cout << "Have a nice day!" << std::endl;
   
   return 0;
 }
 
-// For invalid input, a message is displayed and 0 is returned
-int validateNumber(int argc, char* argv1){
-  // atoi returns 0 for anything it can't convert to an int
-  int number = (argc > 1)?std::atoi(argv1):0;
-  if (argc > 1 && number < 1) { // not a positive integer
-    number = 0; // discards any negative values
-    std::cout << "Program terminated.\n" << argv1 << " is an invalid "\
-    "number of equations.\nPlease enter a positive integer "\
-    "for the number of equations to calculate\n\tand run the program again." << std::endl;
-  } else if (argc == 1) { // nothing entered on the commandline
-    std::cout << "Program terminated.\nCommandline argument missing.\n"\
-    "Please enter a positive integer for the number of equations"\
-    " to calculate\n\tand run the program again.\n" << std::endl;
+// For invalid input 0.0 is returned
+double validateEpsilon(int argc, char* argv1){
+  
+  // atof returns 0 for anything it can't convert to a double
+  double epsilon = (argc > 1)?std::atof(argv1):0.0;
+  
+  if (argc > 1 && epsilon < 0) { // not a positive double
+    epsilon = 0.0; // discards any negative values
   }
   
-  return number; // postive int or 0
+  return epsilon; // postive int or 0
 }
 
 
@@ -115,27 +114,20 @@ void coeffInput(double& d, char c){
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
 }
 
-// Operator inputs coefficients.  If zero is entered for coeffiecient a, an
-// error message is displayed requesting a new entry.
-void readCoeffs(){
+// Inputs are validated and stored in the Solution::Equation coeffs array.
+void readCoeffs(Solution &quad){
   
-  while (true){  // Runs ad-infinitum until break condition is met.
-    coeffInput(*eq.coeffs, 'a');
-    if (*eq.coeffs) {break;}  // a must not equal zero
-    else {  // operator entered zero for coefficient a
-      std::cout << "\nInvalid entry. Please enter a non-zero "\
-      "value for a." << std::endl;
-      coeffInput(*eq.coeffs, 'a');
-    }
-  }
-  
-  coeffInput(*(eq.coeffs + 1), 'b');
-  coeffInput(*(eq.coeffs + 2), 'c');
+  coeffInput(*quad.eq.coeffs, 'a');
+  coeffInput(*(quad.eq.coeffs + 1), 'b');
+  coeffInput(*(quad.eq.coeffs + 2), 'c');
   return;
 }
 
 
-void equSolver(){
+void equSolver(Solution &quad){
+  
+  // If coefficient a is 0 then there is only one root.
+    quad.eq.linearEq = (*quad.eq.coeffs) ? false : true;
 
   return;
 }
