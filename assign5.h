@@ -5,8 +5,9 @@
 
 // simplified to model only quadratic equations
 struct Equation {
-  int coeffsCount = 3;
-  int rootsCount = 2;
+  int coeffSize = 3;        // coeffs array size
+  int maxRoots = 2;         // roots array size
+  int rootsCount = 0;       // increments for each root found
   double* coeffs;           // pointer to coefficient array
   double* roots;            // pointer to roots array
   bool linearEq = false;    // if first coefficient == 0 this is true
@@ -21,10 +22,11 @@ struct Equation {
 class Solution {
   
   private:
-    double xLeft = -10,     // end points of interval
-           xRight = 10;
-    double epsilon = 0;     // error tolerance
-    double root;            // root found by bisect
+    double maxLeft = -10,   // end points of interval
+           maxRight = 10;
+    double epsilon = 0;     // error tolerance, passed from cmdln
+    double unitSize;        // 
+    int units;              // (|maxLeft| + |maxRight|) * unitSize
     bool error;             // no root found flag
   
   public:
@@ -34,7 +36,7 @@ class Solution {
   
     // Class function prototypes
     void findRoots();
-    double bisect();
+    bool bisect();
     double f(double);
 
 };

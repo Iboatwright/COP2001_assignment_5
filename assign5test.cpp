@@ -36,11 +36,6 @@ void coeffInput(double&, char);
 // Reads and returns valid coefficients from stdin.
 void readCoeffs(Solution&);
 
-
-// If the discriminant is zero or greater, the roots are computed,
-// stored in the equation object, and rootsExist is set to true.
-void equSolver(Solution&);
-
 // Appends real roots to the file. Otherwise prints a message
 // to stdout that no real roots exists.
 void outResults(std::ofstream&);
