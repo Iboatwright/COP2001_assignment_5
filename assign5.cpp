@@ -19,13 +19,22 @@ Equation::~Equation() {
     roots = nullptr;
 }
 
+void Solution::findRoots(){
+  
+}
+
 double Solution::bisect()
 {
 
   double xMid;                // midpoint of interval
   double fLeft, fRight;       // function values at xLeft, xRight
   double fMid;                // and xMid
-    
+  
+  if (eq.linearEq){
+    eq.rootsExist = true;
+    eq.roots[0] = (eq.coeffs[2] * -1);
+  }
+  
   // Compute function values at initial endpoints of interval
   fLeft = f(xLeft);
   fRight = f(xRight);

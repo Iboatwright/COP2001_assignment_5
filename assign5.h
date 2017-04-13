@@ -23,7 +23,7 @@ class Solution {
   private:
     double xLeft = -10,     // end points of interval
            xRight = 10;
-    double epsilon;         // error tolerance
+    double epsilon = 0;     // error tolerance
     double root;            // root found by bisect
     bool error;             // no root found flag
   
@@ -33,6 +33,7 @@ class Solution {
     Equation eq;
   
     // Class function prototypes
+    void findRoots();
     double bisect();
     double f(double);
 

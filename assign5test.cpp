@@ -127,7 +127,13 @@ void readCoeffs(Solution &quad){
 void equSolver(Solution &quad){
   
   // If coefficient a is 0 then there is only one root.
-    quad.eq.linearEq = (*quad.eq.coeffs) ? false : true;
+  quad.eq.linearEq = (*quad.eq.coeffs) ? false : true;
+  
+  if (!quad.eq.linearEq){
+    for (int i = -10; <#condition#>; <#increment#>) {
+      <#statements#>
+    }
+  }
 
   return;
 }
