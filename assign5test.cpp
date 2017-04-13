@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
   readCoeffs(quad);
   
   // Determines if there are real roots. If so calculates the roots.
-  equSolver(quad);
+  quad.findRoots();
   
   // Directs output to the file or stdout respectively, based on rootsExist.
   outResults(outStream);
@@ -118,20 +118,6 @@ void readCoeffs(Solution &quad){
   return;
 }
 
-
-void equSolver(Solution &quad){
-  
-  // If coefficient a is 0 then there is only one root.
-  quad.eq.linearEq = (*quad.eq.coeffs) ? false : true;
-  
-  if (!quad.eq.linearEq){
-    for (int i = -10; <#condition#>; <#increment#>) {
-      <#statements#>
-    }
-  }
-
-  return;
-}
 
 void outResults(std::ofstream& outStream){
   if (eq.rootsExist){

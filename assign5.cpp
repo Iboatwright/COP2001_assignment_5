@@ -19,6 +19,14 @@ Equation::~Equation() {
     roots = nullptr;
 }
 
+Solution::Solution(double setMaxLeft = -10, double setMaxRight = 10,
+                   double setUnitSize = 1.0){
+  maxLeft = setMaxLeft;
+  maxRight = setMaxRight;
+  unitSize = setUnitSize;
+  units = (std::abs(maxLeft) + std:abs(maxRight))/ unitSize;
+}
+
 void Solution::findRoots(){
   
   // If coefficient a is 0 then there is only one root.
@@ -30,29 +38,35 @@ void Solution::findRoots(){
   }
   
   double xLeft = maxLeft;
-  double xRight = abs(m)
+  double xRight = xLeft + unitSize;
+  double biRoot = -999.0;
 
-  // search for roots between maxLeft and maxRight one interval at time
+  // search for roots between maxLeft and maxRight one unit interval at time
   if (!eq.linearEq){
-    for (int i = 0; i < intervals; i++) {
-      <#statements#>
+    for (int i = 0; i < units; i++) {
+      if (bisect(xLeft, xRight)){
+        if (!eq.rootsCount){ 
+          eq.roots[eq.rootsCount] = biRoot; 
+          eq.rootsCount++;
+        }
+        else {
+          if ()
+          eq.roots[eq.rootsCount] = ()?
+        }                        
+      };
+      xLeft += unitSize;
+      xRight += unitSize;
     }
   }
-
   return;
 }
-  
-}
 
-bool Solution::bisect()
+double Solution::bisect(double& xLeft, double& xRight, double& biRoot)
 {
-
   double xMid;                // midpoint of interval
   double fLeft, fRight;       // function values at xLeft, xRight
   double fMid;                // and xMid
-  
-
-  
+    
   // Compute function values at initial endpoints of interval
   fLeft = f(xLeft);
   fRight = f(xRight);
@@ -76,14 +90,14 @@ bool Solution::bisect()
       //Display the next interval
       std::cout << "New interval is [" << xLeft << ", " << xRight
       << "]" << std::endl;
-      
     }
     
     //Return the midpoint of last interval
-    return (xLeft + xRight) / 2.0;
+    biRoot = (xLeft + xRight) / 2.0;
+    return true;
 };
 
 // Function whose root is being found.
 double Solution::f(double x){
-  return eq.coeffs * x * x + eq.coeffs[1] * x + eq.coeffs[2]; // __IvanNote__ 3, 2, 1 are a, b, c
+  return eq.coeffs * x * x + eq.coeffs[1] * x + eq.coeffs[2];
 }
