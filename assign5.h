@@ -22,8 +22,8 @@ struct Equation {
 class Solution {
   
   private:
-    double maxLeft = -10,   // end points of interval
-           maxRight = 10;
+    double maxLeft,   // end points of interval
+           maxRight;
     double epsilon = 0;     // error tolerance, passed from cmdln
     double unitSize = 1.0;  // bisect search interval
     int units;              // (|maxLeft| + |maxRight|) / unitSize
@@ -38,7 +38,9 @@ class Solution {
     void findRoots();
     bool bisect(double&, double&, double&);
     double f(double);
-    Solution();
+    Solution(double setMaxLeft = -10, double setMaxRight = 10,
+           double setUnitSize = 0.4);
+    void setEpsilon(double e){ epsilon = e; };
 
 };
 

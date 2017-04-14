@@ -19,13 +19,14 @@ Equation::~Equation() {
     roots = nullptr;
 }
 
-Solution::Solution(double setMaxLeft = -10, double setMaxRight = 10,
-                   double setUnitSize = 1.0){
+Solution::Solution(double setMaxLeft, double setMaxRight,
+                   double setUnitSize){
   maxLeft = setMaxLeft;
   maxRight = setMaxRight;
   unitSize = setUnitSize;
-  units = (std::abs(maxLeft) + std:abs(maxRight))/ unitSize;
+  units = (std::abs(maxLeft) + std::abs(maxRight))/ unitSize;
 }
+
 
 void Solution::findRoots(){
   
@@ -44,9 +45,10 @@ void Solution::findRoots(){
   // search for roots between maxLeft and maxRight one unit interval at time
   if (!eq.linearEq){
     for (int i = 0; i < units; i++) {
-      if (bisect(xLeft, xRight)){
+      if (bisect(xLeft, xRight, biRoot)){
         if (!eq.rootsCount){ 
-          eq.roots[eq.rootsCount] = biRoot; 
+          eq.roots[eq.rootsCount] = biRoot;
+          eq.rootsExist = true;
           eq.rootsCount++;
         }
         else if (eq.roots[eq.rootsCount] != biRoot){
@@ -62,7 +64,8 @@ void Solution::findRoots(){
   return;
 }
 
-double Solution::bisect(double& xLeft, double& xRight, double& biRoot)
+//TODO clean up cout statements.
+bool Solution::bisect(double& xLeft, double& xRight, double& biRoot)
 {
   double xMid;                // midpoint of interval
   double fLeft, fRight;       // function values at xLeft, xRight
@@ -100,5 +103,5 @@ double Solution::bisect(double& xLeft, double& xRight, double& biRoot)
 
 // Function whose root is being found.
 double Solution::f(double x){
-  return eq.coeffs * x * x + eq.coeffs[1] * x + eq.coeffs[2];
+  return eq.coeffs[0] * x * x + eq.coeffs[1] * x + eq.coeffs[2];
 }

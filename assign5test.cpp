@@ -38,7 +38,7 @@ void readCoeffs(Solution&);
 
 // Appends real roots to the file. Otherwise prints a message
 // to stdout that no real roots exists.
-void outResults(std::ofstream&);
+void outResults(std::ofstream&, Solution&);
 
 
 int main(int argc, char* argv[]) {
@@ -59,7 +59,8 @@ int main(int argc, char* argv[]) {
   
   // instantiate Solution object
   Solution quad;
-
+  quad.setEpsilon(epsilon);
+  
   // Operator enters values for the coefficients.
   readCoeffs(quad);
   
@@ -67,7 +68,7 @@ int main(int argc, char* argv[]) {
   quad.findRoots();
   
   // Directs output to the file or stdout respectively, based on rootsExist.
-  outResults(outStream);
+  outResults(outStream, quad);
   
   outStream.close();
   
@@ -75,6 +76,13 @@ int main(int argc, char* argv[]) {
   std::cout << "Have a nice day!" << std::endl;
   
   return 0;
+}
+
+std::string getProgName(char* argv0){
+  std::string fname = std::string(argv0);
+  fname = fname.substr(fname.find_last_of('/')+1);
+  std::cout << "Execution: >> " << fname << std::endl;
+  return fname;
 }
 
 // For invalid input 0.0 is returned
@@ -118,21 +126,26 @@ void readCoeffs(Solution &quad){
   return;
 }
 
-
-void outResults(std::ofstream& outStream){
-  if (eq.rootsExist){
+//TODO custom output for linear equations? Better handling of a=0 at least
+void outResults(std::ofstream& outStream, Solution &quad){
+  if (quad.eq.rootsExist){
     // Results are appended to the opened file.
     outStream << "\nQuadratic equation with the following coefficients:"
-    << std::endl << "a: " << eq.coeffs[0] << "; b: " << eq.coeffs[1]
-    << "; c: " << eq.coeffs[2] << std::endl
+    << std::endl << "a: " << quad.eq.coeffs[0] << "; b: " << quad.eq.coeffs[1]
+    << "; c: " << quad.eq.coeffs[2] << std::endl
     << "has the following roots" << std::endl << "Root1: "
-    << eq.roots[0] << "; Root2: " << eq.roots[1] << ";\n"
-    << std::endl;
+    << quad.eq.roots[0] << "; Root2: ";
+    if (quad.eq.rootsCount > 1){
+      outStream << quad.eq.roots[1];
+    } else {
+      outStream << "Not found";
+    }
+    outStream << ";\n" << std::endl;
   } else {
-    std::cout << "\nQuadratic equation with the following coefficients:"
-    << std::endl << "a: " <<eq.coeffs[0] << "; b: " << eq.coeffs[1]
-    << "; c: " << eq.coeffs[2]  << std::endl
-    << "has no roots in the real domain.\n" << std::endl;
+    std::cout << "\nThe solution of a quadratic equation with coefficients:"
+    << std::endl << "a=" << quad.eq.coeffs[0] << ", b=" << quad.eq.coeffs[1]
+    << ", c=" << quad.eq.coeffs[2]  << std::endl
+    << "has not been found.\n" << std::endl;
   }
   return;
 }
