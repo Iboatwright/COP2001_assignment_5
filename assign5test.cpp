@@ -50,8 +50,11 @@ int main(int argc, char* argv[]) {
   // number of equations to calculate
   double epsilon = validateEpsilon(argc, argv[1]);
   if (!epsilon) {
-    std::cout << "\t\t Execution: " << prog_name << " " << 
-              ((argc < 2)? "no epsilon": epsilon) << std::endl;
+    std::cout << "\t\t Execution: " << prog_name << " ";
+    
+    if (argc < 2) cout << "no epsilon" << std::endl;
+    else cout << epsilon << std::endl;
+    
     return 1;
   }
   
