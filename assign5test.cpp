@@ -50,7 +50,8 @@ int main(int argc, char* argv[]) {
   // number of equations to calculate
   double epsilon = validateEpsilon(argc, argv[1]);
   if (!epsilon) {
-    std::cout << "\t\t Execution: " << prog_name << " " << argv[1] << std::endl;
+    std::cout << "\t\t Execution: " << prog_name << " " << 
+              ((argc < 2)? "no epsilon": epsilon) << std::endl;
     return 1;
   }
   
@@ -81,7 +82,7 @@ int main(int argc, char* argv[]) {
 std::string getProgName(char* argv0){
   std::string fname = std::string(argv0);
   fname = fname.substr(fname.find_last_of('/')+1);
-  std::cout << "Execution: >> " << fname << std::endl;
+  //std::cout << "Execution: >> " << fname << std::endl;
   return fname;
 }
 
