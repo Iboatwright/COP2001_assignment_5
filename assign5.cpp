@@ -49,9 +49,10 @@ void Solution::findRoots(){
           eq.roots[eq.rootsCount] = biRoot; 
           eq.rootsCount++;
         }
-        else {
-          if ()
-          eq.roots[eq.rootsCount] = ()?
+        else if (eq.roots[eq.rootsCount] != biRoot){
+          eq.rootsCount++;
+          eq.roots[eq.rootsCount] = biRoot;
+          return;
         }                        
       };
       xLeft += unitSize;
