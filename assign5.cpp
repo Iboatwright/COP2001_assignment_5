@@ -91,11 +91,14 @@ void Solution::findRoots(double xLeft, double xRight, bool bisectOnce){
   // search for roots between maxLeft and maxRight one unit interval at time
     for (int i = 0; i < units; i++) {
       if (bisect(xLeft, xRight, biRoot)){
-        if (!eq.rootsCount){ 
+        std::cout << " ["<<i<<"]biRoot:" << biRoot << std::endl;
+        if (!eq.rootsCount){
           eq.roots[eq.rootsCount] = biRoot;
           eq.rootsCount++;
-          if (bisectOnce) std::cout<<"r\n";
-          return;
+          if (bisectOnce) {
+            std::cout<<"r\n";
+            return;
+          }
         }
         else if (eq.roots[eq.rootsCount-1] != biRoot){
           eq.roots[eq.rootsCount] = biRoot;
@@ -148,10 +151,6 @@ bool Solution::bisect(double xLeft, double xRight, double& biRoot)
       }
       else if (fLeft * fMid < 0.0) xRight = xMid; //root in [xLeft, xMid]
       else xLeft = xMid;                          //root in [xMid, xRight]
-      
-      //Display the next interval
-      std::cout << "New interval is [" << xLeft << ", " << xRight
-      << "]" << std::endl;
     }
     
     // midpoint of last interval is a root
