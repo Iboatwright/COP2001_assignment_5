@@ -38,69 +38,81 @@ void Solution::inspectEquation(){
   std::string z3 = "+0-,-0+";         // two roots symmetric about origin
   std::string z2 = "++0,--0,+-0,-+0"; // two roots, one at origin
   std::string z1 = "++-,--+,+--,-++"; // two roots
-  
-  if (z5.find(testStatement)){
-    eq.rootsExist = true;
+  std::cout << "z-value: " << testStatement << std::endl;
+  if (z5.find(testStatement)!=std::string::npos){
+    std::cout << "z-hit: 5 >> " << z5.find(testStatement) << std::endl;
     eq.rootsCount++;
     eq.roots[0] = (eq.coeffs[2] / eq.coeffs[1] * -1);
-  } else if (z4.find(testStatement)){
-    eq.rootsExist = true;
+  } else if (z4.find(testStatement)!=std::string::npos){
+    std::cout << "z-hit: 4\n";
     eq.rootsCount++;
     eq.roots[0] = 0.0;
-  } else if (z3.find(testStatement)){
+  } else if (z3.find(testStatement)!=std::string::npos){
     // bisect > 0 then if found set roots[1] = roots[0] * -1
     findRoots(.0000001, maxRight, 1);
-  } else if (z2.find(testStatement)){
-    eq.rootsExist = true;
+    std::cout << "z-hit: 3\n";
+    if (eq.rootsCount) {
+      eq.rootsCount++;
+      eq.roots[1] = eq.roots[0] * -1;
+    }
+  } else if (z2.find(testStatement)!=std::string::npos){
+    std::cout << "z-hit: 2\n";
+    std::cout << "root[0]: " << eq.roots[0] << std::endl;
     eq.rootsCount++;
-    eq.roots[0] = 0.0;
+    eq.roots[0] = 0;
+    std::cout << "root[0]: " << eq.roots[0] << std::endl;
+    setUnits(maxLeft/2.0, maxRight/2.0);
     if (eq.coeffs[0] * eq.coeffs[1] > 0) {
+      std::cout << "z-hit: 1\n";
       // bisect < 0
+      maxRight = -.0000001;
     } else {
       // bisect > 0
+      maxLeft = .0000001;
     }
-  } else if (z1.find(testStatement)){
+    findRoots(maxLeft, maxLeft + unitSize, true);
+  } else if (z1.find(testStatement)!=std::string::npos){
     // bisect full
-    setUnits();
-    double xRight = maxLeft + unitSize;
-    findRoots(maxLeft, xRight, 2);
+    setUnits(maxLeft, maxRight);
+    findRoots(maxLeft, maxLeft + unitSize, false);
   } else {
     // no roots
-  }
-
-}
-
-void Solution::setUnits(){
-  units = std::ceil((std::abs(maxLeft) + std::abs(maxRight))/ unitSize);
-}
-
-void Solution::findRoots(double xLeft, double xRight, int bisects){
-  double biRoot = -999.0;
-
-  // search for roots between maxLeft and maxRight one unit interval at time
-  if (bisects){
-    for (int i = 0; i < units; i++) {
-      if (bisect(xLeft, xRight, biRoot)){
-        if (!eq.rootsCount){ 
-          eq.roots[eq.rootsCount] = biRoot;
-          eq.rootsExist = true;
-          eq.rootsCount++;
-        }
-        else if (eq.roots[eq.rootsCount] != biRoot){
-          eq.rootsCount++;
-          eq.roots[eq.rootsCount] = biRoot;
-          return;
-        }                        
-      };
-      xLeft += unitSize;
-      xRight += unitSize;
-    }
   }
   return;
 }
 
+void Solution::setUnits(double left, double right){
+  units = std::ceil((std::abs(left) + std::abs(right))/ unitSize);
+}
+
+void Solution::findRoots(double xLeft, double xRight, bool bisectOnce){
+  double biRoot = -999.0;
+
+  // search for roots between maxLeft and maxRight one unit interval at time
+    for (int i = 0; i < units; i++) {
+      if (bisect(xLeft, xRight, biRoot)){
+        if (!eq.rootsCount){ 
+          eq.roots[eq.rootsCount] = biRoot;
+          eq.rootsCount++;
+          if (bisectOnce) std::cout<<"r\n";
+          return;
+        }
+        else if (eq.roots[eq.rootsCount-1] != biRoot){
+          eq.roots[eq.rootsCount] = biRoot;
+          eq.rootsCount++;
+          
+          std::cout << "biRoot: " << biRoot << std::endl;
+          return;
+        }                        
+      };
+      xLeft += unitSize;
+      xRight = (xRight + unitSize < maxRight)? xRight + unitSize: maxRight;
+    }
+  return;
+}
+
 //TODO clean up cout statements.
-bool Solution::bisect(double& xLeft, double& xRight, double& biRoot)
+bool Solution::bisect(double xLeft, double xRight, double& biRoot)
 {
   double xMid;                // midpoint of interval
   double fLeft, fRight;       // function values at xLeft, xRight
@@ -108,11 +120,13 @@ bool Solution::bisect(double& xLeft, double& xRight, double& biRoot)
     
   // Compute function values at initial endpoints of interval
   fLeft = f(xLeft);
+  if (fLeft == 0.0) return xLeft;   //xLeft is the root
   fRight = f(xRight);
+  if (fRight == 0.0) return xRight; //xRight is the root
     
     // If no change of sign in the interval, there is no unique root
     error = (fLeft * fRight) > 0;   //test for same sign - set error
-    if (error) return false;              //no root - return to caller
+    if (error) return false;        //no root - return to caller
     
     //Repeat while interval > error tolerance
     while (fabs (xLeft - xRight) > epsilon)
@@ -122,7 +136,7 @@ bool Solution::bisect(double& xLeft, double& xRight, double& biRoot)
       fMid = f(xMid);
       
       //Test function value and reset interval if root not found
-      if (fMid == 0.0) return xMid;               //xMid is the root. Return the root
+      if (fMid == 0.0) return xMid;               //xMid is the root
       else if (fLeft * fMid < 0.0) xRight = xMid; //root in [xLeft, xMid]
       else xLeft = xMid;                          //root in [xMid, xRight]
       
@@ -133,7 +147,7 @@ bool Solution::bisect(double& xLeft, double& xRight, double& biRoot)
     
     //Return the midpoint of last interval
     biRoot = (xLeft + xRight) / 2.0;
-  std::cout << "biRoot: " << biRoot << std::endl;
+//  std::cout << "biRoot: " << biRoot << std::endl;
     return true;
 };
 

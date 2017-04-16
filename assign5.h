@@ -11,7 +11,7 @@ struct Equation {
   double* coeffs;           // pointer to coefficient array
   double* roots;            // pointer to roots array
   bool linearEq = false;    // if first coefficient == 0 this is true
-  bool rootsExist = false;  // if true then real roots exist
+  //bool rootsExist = false;  // if true then real roots exist
   
   // [Con|De]structors
   Equation();
@@ -22,8 +22,8 @@ struct Equation {
 class Solution {
   
   private:
-    double maxLeft = 10,    // end points of interval
-           maxRight = -10;
+    double maxLeft = -10,    // end points of interval
+           maxRight = 10;
     double epsilon = 0;     // error tolerance, passed from cmdln
     double unitSize = 0.4;  // bisect search interval
     int units;              // ceil((|maxLeft| + |maxRight|) / unitSize)
@@ -35,11 +35,11 @@ class Solution {
     Equation eq;
   
     // Class function prototypes
-    void findRoots(double, double, int);
-    bool bisect(double&, double&, double&);
+    void findRoots(double, double, bool);
+    bool bisect(double, double, double&);
     double f(double);
     void setEpsilon(double e){ epsilon = e; };
-    void setUnits();
+    void setUnits(double, double);
     void inspectEquation();
 
 };

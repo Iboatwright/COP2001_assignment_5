@@ -47,13 +47,17 @@ int main(int argc, char* argv[]) {
   const char* OUTPUT_FILE = "results.dat";
   const std::string prog_name = getProgName(argv[0]);
   
-  // number of equations to calculate
+  // minimum interval to bisect
   double epsilon = validateEpsilon(argc, argv[1]);
+  
+  // check for invalid epsilon entries
   if (!epsilon) {
     std::cout << "\t\t Execution: " << prog_name << " ";
     
     if (argc < 2) std::cout << "no epsilon" << std::endl;
-    else std::cout << argv[1] << std::endl;
+    else if ( epsilon > 10 ) {
+      std::cout << epsilon << ": must be 10 > epsilon > 0.";
+    } else std::cout << argv[1] << std::endl;
     
     return 1;
   }
@@ -69,7 +73,7 @@ int main(int argc, char* argv[]) {
   readCoeffs(quad);
   
   // Determines if there are real roots. If so calculates the roots.
-  quad.findRoots();
+  quad.inspectEquation();
   
   // Directs output to the file or stdout respectively, based on rootsExist.
   outResults(outStream, quad);
@@ -132,7 +136,7 @@ void readCoeffs(Solution &quad){
 
 //TODO custom output for linear equations? Better handling of a=0 at least
 void outResults(std::ofstream& outStream, Solution &quad){
-  if (quad.eq.rootsExist){
+  if (quad.eq.rootsCount){
     // Results are appended to the opened file.
     outStream << "\nQuadratic equation with the following coefficients:"
     << std::endl << "a: " << quad.eq.coeffs[0] << "; b: " << quad.eq.coeffs[1]
