@@ -35,14 +35,12 @@ class Solution {
     Equation eq;
   
     // Class function prototypes
-    void findRoots();
+    void findRoots(double, double, int);
     bool bisect(double&, double&, double&);
     double f(double);
-    Solution(double setMaxLeft, double setMaxRight,
-           double setUnitSize);
     void setEpsilon(double e){ epsilon = e; };
     void setUnits();
-  void setBounds();
+    void inspectEquation();
 
 };
 

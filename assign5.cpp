@@ -19,50 +19,66 @@ Equation::~Equation() {
     roots = nullptr;
 }
 
-Solution::Solution(double setMaxLeft = 10.0, double setMaxRight = -10.0,
-                   double setUnitSize = 0.4){
-  maxLeft = setMaxLeft;
-  maxRight = setMaxRight;
-  unitSize = setUnitSize;
-  setUnits();
-}
-
-void setBounds(){
+void Solution::inspectEquation(){
   
+  //create test statement from coeffs
+  std::string testStatement = "";
+  for(int i = 0; i < 3; i++){
+    std::string mark = (eq.coeffs[i] > 0)?"+":"-";
+    mark = (eq.coeffs[i] == 0)?"0":mark;
+    testStatement = testStatement + mark;
+  }
+  
+  // I really wanted to use a switch statement here, but C++ is such an
+  // unnecessarily complicated, bloated mess that the code was too hideous
+  // to write. Ifs for the lose.
+  
+  std::string z5 = "0++,0+-,0-+,0--"; // linear equation
+  std::string z4 = "+00,-00,0+0,0-0"; // one root at origin
+  std::string z3 = "+0-,-0+";         // two roots symmetric about origin
+  std::string z2 = "++0,--0,+-0,-+0"; // two roots, one at origin
+  std::string z1 = "++-,--+,+--,-++"; // two roots
+  
+  if (z5.find(testStatement)){
+    eq.rootsExist = true;
+    eq.rootsCount++;
+    eq.roots[0] = (eq.coeffs[2] / eq.coeffs[1] * -1);
+  } else if (z4.find(testStatement)){
+    eq.rootsExist = true;
+    eq.rootsCount++;
+    eq.roots[0] = 0.0;
+  } else if (z3.find(testStatement)){
+    // bisect > 0 then if found set roots[1] = roots[0] * -1
+    findRoots(.0000001, maxRight, 1);
+  } else if (z2.find(testStatement)){
+    eq.rootsExist = true;
+    eq.rootsCount++;
+    eq.roots[0] = 0.0;
+    if (eq.coeffs[0] * eq.coeffs[1] > 0) {
+      // bisect < 0
+    } else {
+      // bisect > 0
+    }
+  } else if (z1.find(testStatement)){
+    // bisect full
+    setUnits();
+    double xRight = maxLeft + unitSize;
+    findRoots(maxLeft, xRight, 2);
+  } else {
+    // no roots
+  }
+
 }
 
 void Solution::setUnits(){
   units = std::ceil((std::abs(maxLeft) + std::abs(maxRight))/ unitSize);
 }
 
-
-void Solution::findRoots(){
-  double xLeft;
-  
-  // If coefficient a is 0 then there is only one root.
-  if (!eq.coeffs[0]){
-    eq.linearEq = true;
-    eq.rootsExist = true;
-    eq.rootsCount++;
-    eq.roots[0] = (eq.coeffs[2] / eq.coeffs[1] * -1);
-  }
-  // If coefficient c is 0, one root is always 0
-  else if (!eq.coeffs[2]){
-    eq.rootsExist = true;
-    eq.rootsCount++;
-    eq.roots[0] = 0.0;
-    // The 2nd root is the oposite polartiy of b
-    xLeft = (eq.coeffs[1] < 0)? .0000000001: -.0000000001;
-  }
-  else {
-    xLeft = maxLeft;
-  }
-  
-  double xRight = xLeft + unitSize;
+void Solution::findRoots(double xLeft, double xRight, int bisects){
   double biRoot = -999.0;
 
   // search for roots between maxLeft and maxRight one unit interval at time
-  if (!eq.linearEq){
+  if (bisects){
     for (int i = 0; i < units; i++) {
       if (bisect(xLeft, xRight, biRoot)){
         if (!eq.rootsCount){ 
