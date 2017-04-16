@@ -3,15 +3,17 @@
  title  : COP 2001 Assignment #5 - 2017
  author : Ivan Boatwright
  email  : ijboatwright5153@eagle.fgcu.edu
- version: 5.0 4/12/17
+ version: 5.23 4/16/17
  
- quadratic equations of the form:
- a*x^2 + b*x + c = 0
+ solve quadratic equations of the form:
+        a*x^2 + b*x + c = 0
  
  The values for a, b, and c are entered by the operator when prompted.
- If zero is entered for the 'a' variable
  If non-numeric values are entered for a, b, or c an error message is
  displayed.
+ Roots are found using an optimized form of the bisect method utilizing
+ a tolerance value (epsilon) entered from the commandline. If epsilon does
+ not pass validation an error message is displayed and program exits.
  If roots exist the results are printed to a file. If no roots exist a
  message is printed to stdout.
  ***************************************************************************/
@@ -51,12 +53,12 @@ int main(int argc, char* argv[]) {
   double epsilon = validateEpsilon(argc, argv[1]);
   
   // check for invalid epsilon entries
-  if (!epsilon) {
+  if (!epsilon || epsilon > 10) {
     std::cout << "\t\t Execution: " << prog_name << " ";
     
     if (argc < 2) std::cout << "no epsilon" << std::endl;
     else if ( epsilon > 10 ) {
-      std::cout << epsilon << ": must be 10 > epsilon > 0.";
+      std::cout << epsilon << ". Epsilon must be: 10 > epsilon > 0.\n";
     } else std::cout << argv[1] << std::endl;
     
     return 1;
@@ -134,7 +136,6 @@ void readCoeffs(Solution &quad){
   return;
 }
 
-//TODO custom output for linear equations? Better handling of a=0 at least
 void outResults(std::ofstream& outStream, Solution &quad){
   if (quad.eq.rootsCount){
     // Results are appended to the opened file.
