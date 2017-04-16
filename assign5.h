@@ -22,11 +22,11 @@ struct Equation {
 class Solution {
   
   private:
-    double maxLeft,   // end points of interval
-           maxRight;
+    double maxLeft = 10,    // end points of interval
+           maxRight = -10;
     double epsilon = 0;     // error tolerance, passed from cmdln
-    double unitSize = 1.0;  // bisect search interval
-    int units;              // (|maxLeft| + |maxRight|) / unitSize
+    double unitSize = 0.4;  // bisect search interval
+    int units;              // ceil((|maxLeft| + |maxRight|) / unitSize)
     bool error;             // no root found flag
   
   public:
@@ -38,9 +38,11 @@ class Solution {
     void findRoots();
     bool bisect(double&, double&, double&);
     double f(double);
-    Solution(double setMaxLeft = -10, double setMaxRight = 10,
-           double setUnitSize = 0.4);
+    Solution(double setMaxLeft, double setMaxRight,
+           double setUnitSize);
     void setEpsilon(double e){ epsilon = e; };
+    void setUnits();
+  void setBounds();
 
 };
 

@@ -19,26 +19,45 @@ Equation::~Equation() {
     roots = nullptr;
 }
 
-Solution::Solution(double setMaxLeft, double setMaxRight,
-                   double setUnitSize){
+Solution::Solution(double setMaxLeft = 10.0, double setMaxRight = -10.0,
+                   double setUnitSize = 0.4){
   maxLeft = setMaxLeft;
   maxRight = setMaxRight;
   unitSize = setUnitSize;
-  units = (std::abs(maxLeft) + std::abs(maxRight))/ unitSize;
+  setUnits();
+}
+
+void setBounds(){
+  
+}
+
+void Solution::setUnits(){
+  units = std::ceil((std::abs(maxLeft) + std::abs(maxRight))/ unitSize);
 }
 
 
 void Solution::findRoots(){
+  double xLeft;
   
   // If coefficient a is 0 then there is only one root.
-  eq.linearEq = (*eq.coeffs) ? false : true;  
-  if (eq.linearEq){
+  if (!eq.coeffs[0]){
+    eq.linearEq = true;
     eq.rootsExist = true;
     eq.rootsCount++;
     eq.roots[0] = (eq.coeffs[2] / eq.coeffs[1] * -1);
   }
+  // If coefficient c is 0, one root is always 0
+  else if (!eq.coeffs[2]){
+    eq.rootsExist = true;
+    eq.rootsCount++;
+    eq.roots[0] = 0.0;
+    // The 2nd root is the oposite polartiy of b
+    xLeft = (eq.coeffs[1] < 0)? .0000000001: -.0000000001;
+  }
+  else {
+    xLeft = maxLeft;
+  }
   
-  double xLeft = maxLeft;
   double xRight = xLeft + unitSize;
   double biRoot = -999.0;
 
@@ -98,6 +117,7 @@ bool Solution::bisect(double& xLeft, double& xRight, double& biRoot)
     
     //Return the midpoint of last interval
     biRoot = (xLeft + xRight) / 2.0;
+  std::cout << "biRoot: " << biRoot << std::endl;
     return true;
 };
 
